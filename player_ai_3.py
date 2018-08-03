@@ -5,7 +5,8 @@ import random
 import datetime
 import time
 import copy
-import lib.board as board
+import traceback
+import lib.board as game_board
 
 # ML option
 ML_ENABLE = True
@@ -13,6 +14,8 @@ ML_ENABLE = True
 ROUNDS = 10
 # Learning rate
 LEARNING_RATE = 0.25
+# GOAL
+GOAL = 30
 # Basic
 email = "your@email.here"
 session = requests.session()
@@ -125,7 +128,7 @@ def update_score_board(score_board, index, learning_score, updated):
             score_board[ri] = learning_score
 
 if __name__ == "__main__":
-    b = board.GAME_BOARD(email, session, request_url_base)
+    b = game_board.GAME_BOARD(email, session, request_url_base)
 
     # TODO: Learning
     score_board = b.ML_tool.score_board
@@ -136,7 +139,7 @@ if __name__ == "__main__":
     # How many ROUNDS will we play?
     for R in range(0, ROUNDS, 1):
         if R != 0:
-            if counter > 30:
+            if counter > GOAL:
                 b.startNextRound()
             else:
                 b.startNewGame()
@@ -159,7 +162,6 @@ if __name__ == "__main__":
                 rand_location = rand_stage_1(copy.deepcopy(b))
     
                 # apply action
-                counter += 1
                 if ML_ENABLE:
                     # TODO: Learning record to history
                     action = b.placeAt(esti_max_location)
@@ -191,13 +193,17 @@ if __name__ == "__main__":
                     b.moveFromTo(rand_location[0], rand_location[1])
     
                 # check if game is finished
-                if b.isFinished() or counter > 30:
+                if b.isFinished() or counter > GOAL:
                     raise Exception("Game set. Winner is {0}. Score is {1}. Return moves is {2}.".format(b.getWinner(), counter, b.moves))
     
         except Exception as e:
             b.printBoard()
             print(e)
     
+        if counter > GOAL:
+            # pass ML if game is not end at U_Win
+            continue
+
         # TODO: Learning
         if ML_ENABLE:
             length = len(history)

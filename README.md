@@ -7,7 +7,7 @@ A ROTA game ai implemented in python3.
 ## Versions
 - player_ai_1.py
 	- The first version of game ai.
-	- The policy is to apply the first found valid action.
+	- The policy is to apply the first found legal action.
 - player_ai_2.py
 	- The second version of game ai.
 	- The policy is to randomly select one action from all legal actions.

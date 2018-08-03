@@ -159,6 +159,7 @@ class GAME_BOARD():
             else:
                 raise Exception("Invalid operation: {0}".format(data["data"]))
         except Exception as e:
+            traceback.print_exc()
             print("Error occurred. Reason: {0}".format(e))
 
         return 1
