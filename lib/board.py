@@ -89,6 +89,11 @@ class GAME_BOARD():
 
         return result
 
+    def isReachGoal(self):
+        result =  True if self.moves > 30 else False
+
+        return result
+
     def getComputerLocations(self):
         result = list()
         for location in range(0, 9, 1):

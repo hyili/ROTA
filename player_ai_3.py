@@ -34,8 +34,6 @@ def estimax_stage_1(board, score_board):
             max_score = score
             max_score_location = el
 
-    print(max_score_location)
-
     return max_score_location
 
 # TODO: stage 2 player turn
@@ -133,14 +131,19 @@ if __name__ == "__main__":
     score_board = b.ML_tool.score_board
     history = b.ML_tool.board_action_history
 
+    counter = 0
+
     # How many ROUNDS will we play?
     for R in range(0, ROUNDS, 1):
-        counter = 0
-        current_time = datetime.datetime.now()
-        random.seed(current_time)
-    
         if R != 0:
-            b.startNewGame()
+            if counter > 30:
+                b.startNextRound()
+            else:
+                b.startNewGame()
+
+            counter = 0
+            current_time = datetime.datetime.now()
+            random.seed(current_time)
             history.clear()
 
         try:
@@ -166,7 +169,7 @@ if __name__ == "__main__":
     
                 # check if game is finished
                 if b.isFinished():
-                    raise Exception("Game set. Winner is {0}. Score is {1}.".format(b.getWinner(), counter))
+                    raise Exception("Game set. Winner is {0}. Score is {1}. Return moves is {2}.".format(b.getWinner(), counter, b.moves))
     
             # move
             while True:
@@ -188,8 +191,8 @@ if __name__ == "__main__":
                     b.moveFromTo(rand_location[0], rand_location[1])
     
                 # check if game is finished
-                if b.isFinished():
-                    raise Exception("Game set. Winner is {0}. Score is {1}.".format(b.getWinner(), counter))
+                if b.isFinished() or counter > 30:
+                    raise Exception("Game set. Winner is {0}. Score is {1}. Return moves is {2}.".format(b.getWinner(), counter, b.moves))
     
         except Exception as e:
             b.printBoard()
