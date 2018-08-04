@@ -2,6 +2,7 @@
 
 import json
 import copy
+import traceback
 import lib.action as a
 import lib.ml as ml
 
@@ -36,7 +37,7 @@ class GAME_BOARD():
 
     # Board method
     def init(self):
-        self.ML_tool.read_from_json()
+        self.readFromJSON()
         self.board = "---------"
         self.I_win = 0
         self.U_win = 0
@@ -57,8 +58,14 @@ class GAME_BOARD():
         self.won = 0
 
     def close(self):
-        self.ML_tool.save_to_json()
+        self.saveToJSON()
         self.session.close()
+
+    def readFromJSON(self):
+        self.ML_tool.read_from_json()
+
+    def saveToJSON(self):
+        self.ML_tool.save_to_json()
 
     def getBoard(self):
         return self.board
@@ -134,11 +141,14 @@ class GAME_BOARD():
 
     # Do actions
     def updateGameBoard(self, data):
-        self.board = data["board"]
-        self.I_win = data["player_wins"]
-        self.U_win = data["computer_wins"]
-        self.moves = data["moves"]
-        self.won = data["games_won"]
+        try:
+            self.board = data["board"]
+            self.I_win = data["player_wins"]
+            self.U_win = data["computer_wins"]
+            self.moves = data["moves"]
+            self.won = data["games_won"]
+        except Exception as e:
+            print(data)
 
     def doAction(self, action):
         result = action.run(self)

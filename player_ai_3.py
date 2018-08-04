@@ -5,13 +5,13 @@ import random
 import datetime
 import time
 import copy
-import traceback
 import lib.board as game_board
 
 # ML option
 ML_ENABLE = True
 # Run How many times
 ROUNDS = 10
+SAVE_PER_ROUNDS = 10
 # Learning rate
 LEARNING_RATE = 0.25
 # GOAL
@@ -138,6 +138,12 @@ if __name__ == "__main__":
 
     # How many ROUNDS will we play?
     for R in range(0, ROUNDS, 1):
+        print("Round {0}.".format(R))
+
+        # save json file
+        if R % SAVE_PER_ROUNDS == 0:
+            b.saveToJSON()
+
         if R != 0:
             if counter > GOAL:
                 b.startNextRound()
@@ -191,7 +197,7 @@ if __name__ == "__main__":
                     b.ML_tool.board_action_history.append((copy.deepcopy(b.board), action))
                 else:
                     b.moveFromTo(rand_location[0], rand_location[1])
-    
+
                 # check if game is finished
                 if b.isFinished() or counter > GOAL:
                     raise Exception("Game set. Winner is {0}. Score is {1}. Return moves is {2}.".format(b.getWinner(), counter, b.moves))
